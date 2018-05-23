@@ -72,7 +72,7 @@
     "ovh-angular-browser-alert": "ovh-ux/ovh-angular-browser-alert#^1.0.0",
     "ovh-angular-export-csv": "^0.3.2",
     "ovh-angular-http": "^3.0.1",
-    "ovh-angular-otrs": "git+https://github.com/ovh-ux/ovh-angular-otrs.git#master",
+    "ovh-angular-otrs": "git+https://github.com/ovh-ux/ovh-angular-otrs.git#hotfix/typo",
     "ovh-angular-pagination-front": "^7.0.0",
     "ovh-angular-proxy-request": "^0.1.0",
     "ovh-angular-q-allsettled": "^0.3.1",
