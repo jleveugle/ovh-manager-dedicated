@@ -4,7 +4,7 @@
  * @description
  * Autorenew services configuration
  */
-angular.module("Billing.controllers").controller("Billing.controllers.AutoRenew", [
+angular.module("Billing").controller("Billing.controllers.AutoRenew", [
     "$scope",
     "$location",
     "$filter",

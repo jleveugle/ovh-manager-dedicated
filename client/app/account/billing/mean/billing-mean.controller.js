@@ -1,4 +1,4 @@
-angular.module("Billing.controllers").controller("Billing.controllers.Mean", [
+angular.module("Billing").controller("Billing.controllers.Mean", [
     "$scope",
     "$q",
     "$log",

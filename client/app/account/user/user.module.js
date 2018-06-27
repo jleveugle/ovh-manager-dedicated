@@ -1,5 +1,14 @@
 angular
-    .module("UserAccount")
+    .module("UserAccount", [
+        "ja.qr",
+        "ovh-utils-angular",
+        "UserAccount.services",
+        "UserAccount.controllers",
+        "UserAccount.directives",
+        "UserAccount.filters",
+        "ovhSignupApp"
+    ])
+    .constant("UserAccount.conf.BASE_URL", "account/user/")
     .config([
         "$stateProvider",
         "UserAccount.conf.BASE_URL",

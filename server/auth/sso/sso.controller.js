@@ -41,6 +41,8 @@ export function login (req, res) {
 
         winston.info("[SSO] - Logged");
 
+        console.log(config.ssoAuth.baseUrl + req.url, resp.headers.location)
+
         return res.redirect(resp.headers.location);
     });
 }
@@ -66,6 +68,9 @@ export function auth (req, res) {
         if (err) {
             return res.status(500);
         }
+        console.log("----");
+        console.log(config.ssoAuth.devLoginUrl, data.data.url);
+        console.log("----");
 
         return res.redirect(data.data.url);
     });

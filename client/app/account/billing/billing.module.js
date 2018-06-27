@@ -1,11 +1,22 @@
 angular
-    .module("Billing")
+    .module("Billing", [
+        "ovh-utils-angular",
+        "ngRoute",
+        "ngSanitize",
+        "ui.bootstrap",
+        "Billing.constants",
+        "Billing.services",
+        "Billing.controllers",
+        "Billing.directives",
+        "Billing.filters",
+        "ovh-angular-export-csv"
+    ])
+    .constant("BILLING_BASE_URL", "account/billing/")
     .config([
         "$stateProvider",
         "BILLING_BASE_URL",
         "Billing.constants",
         ($stateProvider, BILLING_BASE_URL, constants) => {
-
             const denyBillingSectionForEnterpriseResolve = ($q, User) =>
                 User.getUser().then((curUser) => {
                     if (curUser.isEnterprise) {

@@ -1,4 +1,4 @@
-angular.module("App").config(($stateProvider, constants, BILLING_BASE_URL) => {
+angular.module("Billing").config(($stateProvider, constants, BILLING_BASE_URL) => {
 
     if (constants.target === "US") {
         $stateProvider.state("app.account.billing.payments.request", {

@@ -45,8 +45,7 @@ angular.module("App").controller("ImpiCtrl", ($scope, $translate, Server, Pollin
     };
 
     $scope.header = {
-        XSRFTOKEN: $.cookie("XSRF-TOKEN"),
-        XCsid: $.getUrlParam("csid")
+        XSRFTOKEN: $.cookie("XSRF-TOKEN")
     };
 
     // Icons Status change

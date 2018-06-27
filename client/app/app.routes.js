@@ -5,7 +5,7 @@ angular.module("App").config(($stateProvider) => {
         url: "",
         controller: "AppCtrl",
         controllerAs: "AppCtrl",
-        templateUrl: "app.html",
+        template: require("app.html"),
         translations: ["common", "components", "double-authentication", "user-contracts"]
     });
 

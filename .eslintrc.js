@@ -30,5 +30,8 @@ module.exports = {
         "RandExp": true,
         "EprotectIframeClient": true,
         "zE": true
+    },
+    "parserOptions": {
+        "sourceType": "module"
     }
 };

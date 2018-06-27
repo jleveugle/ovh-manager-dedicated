@@ -1,5 +1,46 @@
 angular
-    .module("App")
+    .module("App", [
+        "ovh-angular-proxy-request",
+        "ovh-angular-pagination-front",
+        "ovh-utils-angular",
+        "ui.bootstrap",
+        "ui.router",
+        "ngRoute",
+        "ngSanitize",
+        "ngMessages",
+        "controllers",
+        "services",
+        "filters",
+        "directives",
+        "Billing",
+        "UserAccount",
+        "ovh-angular-http",
+        "ui.utils",
+        "ovh-angular-q-allSettled",
+        "ovh-angular-swimming-poll",
+        "ovh-angular-export-csv",
+        "ng-at-internet",
+        "atInternetUiRouterPlugin",
+        "ovh-angular-user-pref",
+        "ovhBrowserAlert",
+        "ui.validate",
+        "ovh-angular-sso-auth",
+        "ovh-angular-sso-auth-modal-plugin",
+        "oui",
+        "ui.select",
+        "Module.ip",
+        "Module.license",
+        "Module.download",
+        "internationalPhoneNumber",
+        "ovh-angular-sidebar-menu",
+        "ovh-angular-otrs",
+        "pascalprecht.translate",
+        "chart.js",
+        "ovh-angular-responsive-tabs",
+        "ngCkeditor",
+        "Module.otrs",
+        "angular-translate-loader-pluggable"
+    ])
     .config([
         "ovh-proxy-request.proxyProvider",
         (proxy) => {
@@ -9,9 +50,6 @@ angular
     ])
     .config(($locationProvider) => {
         $locationProvider.hashPrefix("");
-    })
-    .config((tmhDynamicLocaleProvider) => {
-        tmhDynamicLocaleProvider.localeLocationPattern("resources/angular/i18n/angular-locale_{{locale}}.js");
     })
     .config((OvhHttpProvider, constants) => {
         OvhHttpProvider.rootPath = constants.swsProxyPath;
@@ -94,7 +132,7 @@ angular
         // Fix security issue: https://github.com/angular-translate/angular-translate/issues/1418
         return $sanitize(translationId);
     })
-    .config((LANGUAGES, $translateProvider, constants) => {
+    .config((LANGUAGES, $translateProvider, constants, translatePluggableLoaderProvider) => {
         let defaultLanguage = "fr_FR";
 
         if (localStorage["univers-selected-language"]) {
@@ -103,7 +141,9 @@ angular
             localStorage["univers-selected-language"] = defaultLanguage;
         }
 
-        $translateProvider.useLoader("$translatePartialLoader", {
+        $translateProvider.useLoader("translatePluggableLoader");
+
+        translatePluggableLoaderProvider.useLoader("$translatePartialLoader", {
             urlTemplate: constants.prodMode ? "{part}/translations/Messages_{lang}.json" : "client/app/{part}/translations/Messages_{lang}.json"
         });
 

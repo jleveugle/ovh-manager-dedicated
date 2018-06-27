@@ -1,4 +1,4 @@
-angular.module("App").config(($stateProvider, BILLING_BASE_URL) => {
+angular.module("Billing").config(($stateProvider, BILLING_BASE_URL) => {
 
     $stateProvider.state("app.account.billing.history.debtDetails", {
         url: "/debt-details/:debtId",

@@ -5,12 +5,11 @@ angular.module("App").controller("DedicatedCloudCtrl", [
     "$q",
     "$log",
     "featureAvailability",
-    "step",
     "DedicatedCloud",
     "$translate",
     "Module.services.notification",
     "User",
-    function ($scope, $timeout, $stateParams, $q, $log, featureAvailability, step, DedicatedCloud, $translate, Notification, User) {
+    function ($scope, $timeout, $stateParams, $q, $log, featureAvailability, DedicatedCloud, $translate, Notification, User) {
         "use strict";
 
         $scope.HDS_READY_NOTIFICATION = "HDS_READY_NOTIFICATION";

@@ -4,11 +4,10 @@ angular.module("UserAccount.controllers").controller("UserAccount.controllers.In
     "$location",
     "$translate",
     "UserAccount.services.Infos",
-    "CountryConstants",
     "Alerter",
     "constants",
 
-    function ($scope, $q, $location, $translate, UseraccountInfos, countryConstants, Alerter, constants) {
+    function ($scope, $q, $location, $translate, UseraccountInfos, Alerter, constants) {
         "use strict";
 
         /* Be carefull, a part of this controller is url driven.

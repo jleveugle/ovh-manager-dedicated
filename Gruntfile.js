@@ -9,6 +9,8 @@ module.exports = function (grunt) {
     const assets = require("./Assets");
     const constants = require("./constants.config");
 
+    const webpackConfig = require("./webpack.config");
+
     const glob = require("glob");
 
     const mode = grunt.option("mode") || "dev";
@@ -23,7 +25,7 @@ module.exports = function (grunt) {
             return {
                 expand: true,
                 cwd: `node_modules/${module}/src`,
-                src: assetsModule.src.js.map((jsPath) => jsPath.replace("src/", "")),
+                src: assetsModule.src.js.map(jsPath => jsPath.replace("src/", "")),
                 dest: "dist/client/app"
             };
         },
@@ -31,7 +33,7 @@ module.exports = function (grunt) {
     );
 
     function copyFromEachModules (properties, dest) {
-        return _.map(assets[target].modules, (module) => {
+        return _.map(assets[target].modules, module => {
             const assetsModule = require(`./node_modules/${module}/Assets.js`);
 
             return {
@@ -47,10 +49,11 @@ module.exports = function (grunt) {
         });
     }
 
+    grunt.loadNpmTasks("grunt-webpack");
     grunt.loadNpmTasks("grunt-newer");
     grunt.loadTasks("tasks");
-    require("time-grunt")(grunt);
 
+    require("time-grunt")(grunt);
     require("matchdep").filterAll("grunt-*").forEach(grunt.loadNpmTasks);
 
     grunt.initConfig({
@@ -75,6 +78,8 @@ module.exports = function (grunt) {
                 "<%= builddir %>",
                 "<%= distdir %>",
                 "<%= componentsdir %>/ovh-utils-angular/",
+                "<%= componentsdir %>/angular-translate-loader-partial",
+                "<%= componentsdir %>/angular-translate-loader-static-files",
                 "<%= publicdir %>/index.html",
                 "<%= publicdir %>/auth.html",
                 "*.war"
@@ -147,6 +152,11 @@ module.exports = function (grunt) {
 
         // Concatenation
         concat: {
+            dev: {
+                files: {
+                    "<%= builddir %>/js/index.js": ["<%= publicdir %>/index.js", assets.src.js]
+                }
+            },
             dist: {
                 files: {
                     "<%= builddir %>/js/app.js": ["<%= builddir %>/js/constants-*.js", "!<%= builddir %>/js/constants-login.js", assets.src.jsES6],
@@ -202,20 +212,19 @@ module.exports = function (grunt) {
             }
         },
         babel: {
-            options: {
-                presets: ["es2015"]
-            },
             modules: {
                 files: filesJsModules
             },
-            dist: {
-                files: [{
-                    expand: true,
-                    src: assets.src.js,
-                    dest: "dist"
-                }]
-            },
             server: {
+                options: {
+                    presets: [
+                        ["@babel/env", {
+                            targets: {
+                                node: "current"
+                            }
+                        }]
+                    ]
+                },
                 files: [{
                     expand: true,
                     src: assets.server.js,
@@ -223,13 +232,34 @@ module.exports = function (grunt) {
                 }]
             }
         },
+
         copy: {
+            translationLibJS: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: "node_modules/angular-translate/dist",
+                        src: ["angular-translate-loader-static-files/angular-translate-loader-static-files.js", "angular-translate-loader-partial/angular-translate-loader-partial.js"],
+                        dest: "<%= componentsdir %>/"
+                    }
+                ]
+            },
+            html: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: "<%= publicdir %>",
+                        src: "**/*.html",
+                        dest: "<%= distdir %>/app"
+                    }
+                ]
+            },
             dev: {
                 files: [
                     {
                         expand: true,
                         cwd: "<%= builddir %>",
-                        src: "*.html",
+                        src: "**/*.html",
                         dest: "<%= publicdir %>/"
                     },
                     {
@@ -420,7 +450,7 @@ module.exports = function (grunt) {
                 ]
             },
             modules: {
-                files: copyFromEachModules(["src.js", "src.html", "src.images", "resources.i18n", "src.css"], "client/app")
+                files: copyFromEachModules(["src.html", "src.images", "resources.i18n", "src.css"], "client/app")
             }
         },
 
@@ -428,7 +458,7 @@ module.exports = function (grunt) {
         template: {
             dist: {
                 src: "<%= publicdir %>/index.ejs",
-                dest: "<%= builddir %>/index.html",
+                dest: "<%= distdir %>/app/index.html",
                 variables () {
                     return {
                         prodMode: mode === "prod",
@@ -495,60 +525,6 @@ module.exports = function (grunt) {
             devApp: {
                 options: {
                     name: "App",
-                    deps: (
-                        function () {
-                        // IIFE to generate deps for all modules for this target only
-                            const deps = [
-                                "ovh-angular-proxy-request",
-                                "ovh-angular-pagination-front",
-                                "ovh-utils-angular",
-                                "ui.bootstrap",
-                                "ui.router",
-                                "ngRoute",
-                                "ngSanitize",
-                                "ngMessages",
-                                "controllers",
-                                "services",
-                                "filters",
-                                "directives",
-                                "Billing",
-                                "UserAccount",
-                                "ovh-angular-http",
-                                "ui.utils",
-                                "ovh-angular-q-allSettled",
-                                "ovh-angular-swimming-poll",
-                                "ovh-angular-export-csv",
-                                "ng-at-internet",
-                                "atInternetUiRouterPlugin",
-                                "ovh-angular-user-pref",
-                                "ovhBrowserAlert",
-                                "ui.validate",
-                                "ovh-angular-sso-auth",
-                                "ovh-angular-sso-auth-modal-plugin",
-                                "oui",
-                                "ui.select",
-                                "Module.ip",
-                                "Module.license",
-                                "Module.download",
-                                "internationalPhoneNumber",
-                                "ovh-angular-sidebar-menu",
-                                "ovh-angular-otrs",
-                                "pascalprecht.translate",
-                                "chart.js",
-                                "ovh-angular-responsive-tabs",
-                                "ngCkeditor",
-                                "Module.otrs"
-                            ];
-                            _.forEach(assets[target].modules, (module) => {
-                                if (/^ovh-module\-([0-9a-zA-Z]+)$/.test(module)) {
-                                    deps.push(`Module.${
-                                        module.match(/^ovh-module\-([0-9a-zA-Z]+)$/)[1]}`);
-                                } else {
-                                    grunt.fail.warn(`Impossible to parse ${module}`);
-                                }
-                            });
-                            return deps;
-                        })(),
                     dest: "<%= builddir %>/js/constants-app.js"
                 },
                 constants: {
@@ -599,9 +575,7 @@ module.exports = function (grunt) {
                     ]
                 },
                 constants: {
-                    BILLING_BASE_URL: "account/billing/",
                     "Billing.constants": {
-                        aapiRootPath: "<%= aapiPath %>",
                         swsProxyRootPath: "<%= swsProxyPath %>",
                         paymentMeans: ["bankAccount", "paypal", "creditCard", "deferredPaymentAccount"],
                         target
@@ -627,16 +601,11 @@ module.exports = function (grunt) {
                     ]
                 },
                 constants: {
-                    "UserAccount.conf.BASE_URL": "account/user/",
                     "UserAccount.constants": {
-                        aapiRootPath: "<%= aapiPath %>",
                         swsProxyRootPath: "<%= swsProxyPath %>",
                         target
                     },
                     LANGUAGES: constants[target].LANGUAGES,
-                    CountryConstants: {
-                        support: constants[target].URLS.support
-                    },
                     AccountCreationURLS: constants[target].accountCreation
                 }
             },
@@ -646,61 +615,6 @@ module.exports = function (grunt) {
             distApp: {
                 options: {
                     name: "App",
-                    deps: (
-                        function () {
-                        // IIFE to generate deps for all modules for this target only
-                            const deps = [
-                                "ovh-angular-proxy-request",
-                                "ovh-angular-pagination-front",
-                                "ovh-utils-angular",
-                                "ui.bootstrap",
-                                "ui.router",
-                                "ngRoute",
-                                "ngSanitize",
-                                "controllers",
-                                "services",
-                                "filters",
-                                "directives",
-                                "Billing",
-                                "UserAccount",
-                                "ovh-angular-http",
-                                "ui.utils",
-                                "ovh-angular-q-allSettled",
-                                "ovh-angular-swimming-poll",
-                                "ngMessages",
-                                "ovh-angular-export-csv",
-                                "ng-at-internet",
-                                "atInternetUiRouterPlugin",
-                                "ovh-angular-user-pref",
-                                "ovhBrowserAlert",
-                                "ui.validate",
-                                "ovh-angular-sso-auth",
-                                "ovh-angular-sso-auth-modal-plugin",
-                                "oui",
-                                "ui.select",
-                                "ngRaven",
-                                "Module.ip",
-                                "Module.license",
-                                "Module.download",
-                                "internationalPhoneNumber",
-                                "ovh-angular-sidebar-menu",
-                                "ovh-angular-otrs",
-                                "chart.js",
-                                "ovh-angular-responsive-tabs",
-                                "ngCkeditor",
-                                "Module.otrs",
-                                "ovhNgRavenConfig"
-                            ];
-                            _.forEach(assets[target].modules, (module) => {
-                                if (/^ovh-module\-([0-9a-zA-Z]+)$/.test(module)) {
-                                    deps.push(`Module.${
-                                        module.match(/^ovh-module\-([0-9a-zA-Z]+)$/)[1]}`);
-                                } else {
-                                    grunt.fail.warn(`Impossible to parse ${module}`);
-                                }
-                            });
-                            return deps;
-                        })(),
                     dest: "<%= builddir %>/js/constants-app.js"
                 },
                 constants: {
@@ -736,24 +650,10 @@ module.exports = function (grunt) {
             distBilling: {
                 options: {
                     name: "Billing",
-                    dest: "<%= builddir %>/js/constants-billing.js",
-                    deps: [
-                        "ovh-utils-angular",
-                        "ngRoute",
-                        "ngSanitize",
-                        "ui.bootstrap",
-                        "Billing.constants",
-                        "Billing.services",
-                        "Billing.controllers",
-                        "Billing.directives",
-                        "Billing.filters",
-                        "ovh-angular-export-csv"
-                    ]
+                    dest: "<%= builddir %>/js/constants-billing.js"
                 },
                 constants: {
-                    BILLING_BASE_URL: "account/billing/",
                     "Billing.constants": {
-                        aapiRootPath: "<%= aapiPath %>",
                         swsProxyRootPath: "<%= swsProxyPath %>",
                         paymentMeans: ["bankAccount", "paypal", "creditCard", "deferredPaymentAccount"],
                         target
@@ -766,33 +666,18 @@ module.exports = function (grunt) {
             distUserAccount: {
                 options: {
                     name: "UserAccount",
-                    dest: "<%= builddir %>/js/constants-user.js",
-                    deps: [
-                        "ja.qr",
-                        "ovh-utils-angular",
-                        "UserAccount.services",
-                        "UserAccount.controllers",
-                        "UserAccount.directives",
-                        "UserAccount.filters",
-                        "ovhSignupApp"
-                    ]
+                    dest: "<%= builddir %>/js/constants-user.js"
                 },
                 constants: {
                     "UserAccount.conf.BASE_URL": "account/user/",
                     "UserAccount.constants": {
-                        aapiRootPath: "<%= aapiPath %>",
                         swsProxyRootPath: "<%= swsProxyPath %>",
                         target
                     },
                     LANGUAGES: constants[target].LANGUAGES,
-                    CountryConstants: {
-                        support: constants[target].URLS.support
-                    },
                     AccountCreationURLS: constants[target].accountCreation
                 }
             }
-
-            /* [MODULE] */
         },
 
         xml2json: {
@@ -827,42 +712,14 @@ module.exports = function (grunt) {
                         to: ""
                     }
                 ]
-            }/* ,
-            version : {
-                src          : "version.txt",
-                dest         : "<%= distdir%>/",
-                replacements : [
-                    {
-                        from : "VERSION",
-                        to   : "<%= pkg.version %>"
-                    },
-                    {
-                        from : "MNGR",
-                        to   : "DEDICATED." + target.toUpperCase()
-                    }
-                ]
-            }*/
-        },
-
-        protractor: {
-            options: {
-                configFile: "protractor.conf.js"
-            },
-            browser: {
-                options: {
-                    args: {
-                        browser: grunt.option("browser") || "phantomjs",
-                        suite: grunt.option("suite") || "full"
-                    }
-                }
             }
         },
 
         // Auto Build
         watch: {
             js: {
-                files: assets.src.js,
-                tasks: ["eslint", "newer:babel:dist", "clean:deleted", "template"],
+                files: ["node_modules/@ovh-ux/**/*.js", assets.src.js],
+                tasks: ["eslint", "concat:dev", "webpack"],
                 options: {
                     spawn: false
                 }
@@ -900,7 +757,6 @@ module.exports = function (grunt) {
                 files: (
                     function () {
                         const files = [
-                        // assets.src.css,
                             "src/**/*_flymake.js"
                         ];
                         _.forEach(assets[target].modules, (module) => {
@@ -928,15 +784,8 @@ module.exports = function (grunt) {
             }
         },
 
-        ngAnnotate: {
-            dist: {
-                files: [{
-                    expand: true,
-                    cwd: "<%= distdir %>",
-                    src: "**/*.js",
-                    dest: "<%= distdir %>"
-                }]
-            }
+        webpack: {
+            dev: Object.assign({ watch: true, keepalive: false }, webpackConfig)
         }
 
     });
@@ -988,7 +837,10 @@ module.exports = function (grunt) {
         "ngconstant:devBilling",
         "ngconstant:devUserAccount",
         "babel",
-        "ngAnnotate:dist",
+        "concat:dev",
+        "copy:translationLibJS",
+        "webpack",
+        "copy:html",
         "copy:modules",
         "less",
         "sass",
