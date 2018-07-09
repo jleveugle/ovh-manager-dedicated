@@ -1,5 +1,5 @@
 class SessionService {
-    constructor ($q, $translate, $translatePartialLoader, constants, CdnDomain, DedicatedCloud, Nas, Products, User, LANGUAGES, OtrsPopupService, ssoAuthentication, featureAvailability) {
+    constructor ($q, $translate, $translatePartialLoader, constants, CdnDomain, DedicatedCloud, Nas, NavbarNotificationService, Products, User, LANGUAGES, OtrsPopupService, ssoAuthentication, featureAvailability) {
         this.$q = $q;
         this.$translate = $translate;
         this.$translatePartialLoader = $translatePartialLoader;
@@ -8,6 +8,7 @@ class SessionService {
         this.cdnDomain = CdnDomain;
         this.dedicatedCloud = DedicatedCloud;
         this.nas = Nas;
+        this.navbarNotificationService = NavbarNotificationService;
         this.products = Products;
         this.user = User;
         this.LANGUAGES = LANGUAGES;
@@ -516,11 +517,11 @@ class SessionService {
         const managerUrls = this.constants.MANAGER_URLS;
 
         // Get base structure for the navbar
-        const getBaseNavbar = (user) => {
+        const getBaseNavbar = (user, notificationsMenu) => {
             const baseNavbar = {
                 // Set OVH Logo
                 brand: {
-                    title: this.$translate.instant("index_nav_bar_logo_alt"),
+                    label: this.$translate.instant("index_nav_bar_logo_alt"),
                     url: managerUrls.dedicated,
                     iconAlt: "OVH",
                     iconClass: "navbar-logo",
@@ -540,14 +541,19 @@ class SessionService {
                 ];
             }
 
+            if (notificationsMenu.show) {
+                baseNavbar.internalLinks.splice(1, 0, notificationsMenu);
+            }
+
             return baseNavbar;
         };
 
         return this.$q.all({
             translate: this.loadTranslations(),
-            user: this.user.getUser()
+            user: this.user.getUser(),
+            notifications: this.navbarNotificationService.getNavbarContent()
         })
-            .then(({ user }) => getBaseNavbar(user))
+            .then(({ user, notifications }) => getBaseNavbar(user, notifications))
             .catch(() => getBaseNavbar());
     }
 }

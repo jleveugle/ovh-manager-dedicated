@@ -11,9 +11,8 @@ angular
     .constant("UserAccount.conf.BASE_URL", "account/user/")
     .config([
         "$stateProvider",
-        "UserAccount.conf.BASE_URL",
         "UserAccount.constants",
-        function ($stateProvider, USER_ACCOUNT_BASE_URL, userAccountConstants) {
+        function ($stateProvider, userAccountConstants) {
             "use strict";
 
             const target = userAccountConstants.target;

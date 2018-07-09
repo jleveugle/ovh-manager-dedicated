@@ -1,4 +1,4 @@
-angular.module("App").controller("ImpiCtrl", ($scope, $translate, Server, Polling, Alerter, User, $sce, $stateParams) => {
+angular.module("App").controller("ImpiCtrl", ($scope, $translate, Server, Polling, Alerter, User, $sce, $stateParams, featureAvailability, constants) => {
     $scope.ttl = "5";
     $scope.alert = "server_tab_ipmi_alert";
 
@@ -192,7 +192,12 @@ angular.module("App").controller("ImpiCtrl", ($scope, $translate, Server, Pollin
         $scope.loader.buttonStart = true;
         $scope.loader.navigationReady = null;
 
-        Server.ipmiStartConnection($stateParams.productId, "serialOverLanURL", $scope.ttl, $scope.ipmi.model.clientIp).then(
+        Server.ipmiStartConnection({
+            serviceName: $stateParams.productId,
+            type: "serialOverLanURL",
+            ttl: $scope.ttl,
+            ipToAllow: $scope.ipmi.model.clientIp
+        }).then(
             (task) => {
                 startIpmiPollNavigation({ id: task.taskId });
             },
@@ -243,8 +248,14 @@ angular.module("App").controller("ImpiCtrl", ($scope, $translate, Server, Pollin
         $scope.loader.javaReady = false;
         $scope.loader.javaLoading = true;
         $scope.loader.buttonStart = true;
-
-        Server.ipmiStartConnection($stateParams.productId, "kvmipJnlp", $scope.ttl, $scope.ipmi.model.clientIp).then(
+        const withGeolocation = !_.includes(["HIL_1", "VIN_1"], $scope.server.datacenter) && constants.target === "US";
+        Server.ipmiStartConnection({
+            serviceName: $stateParams.productId,
+            type: "kvmipJnlp",
+            ttl: $scope.ttl,
+            ipToAllow: $scope.ipmi.model.clientIp,
+            withGeolocation
+        }).then(
             (task) => {
                 startIpmiPollJava({ id: task.taskId });
             },
@@ -504,4 +515,6 @@ angular.module("App").controller("ImpiCtrl", ($scope, $translate, Server, Pollin
             }
         );
     }
+
+    $scope.hasSOL = () => featureAvailability.hasSerialOverLan();
 });

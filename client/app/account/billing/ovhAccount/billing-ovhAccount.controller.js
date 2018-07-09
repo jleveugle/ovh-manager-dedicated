@@ -1,4 +1,4 @@
-angular.module("Billing.controllers").controller("Billing.controllers.OvhAccount", ($scope, $filter, $timeout, $translate, BILLING_BASE_URL, BillingOvhAccount, User, BillingmessageParser, BillingdateRangeSelection) => {
+angular.module("Billing").controller("Billing.controllers.OvhAccount", ($scope, $filter, $timeout, $translate, BILLING_BASE_URL, BillingOvhAccount, User, BillingmessageParser, BillingdateRangeSelection) => {
     $scope.ovhAccountLoading = false;
     $scope.ovhAccountsLoading = false;
     $scope.ovhAccount = {

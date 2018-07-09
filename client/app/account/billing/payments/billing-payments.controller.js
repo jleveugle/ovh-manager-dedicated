@@ -1,4 +1,4 @@
-angular.module("Billing.controllers").controller("Billing.controllers.PaymentsCtrl", function ($filter, $log, $q, $scope, $timeout, $state, $translate, constants, Alerter, BillingPayments, BillingdateRangeSelection, featureAvailability, OvhApiMe) {
+angular.module("Billing").controller("Billing.controllers.PaymentsCtrl", function ($filter, $log, $q, $scope, $timeout, $state, $translate, constants, Alerter, BillingPayments, BillingdateRangeSelection, featureAvailability, OvhApiMe) {
     "use strict";
 
     this.paginatedPayments = null;

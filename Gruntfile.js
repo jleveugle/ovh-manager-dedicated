@@ -540,7 +540,7 @@ module.exports = function (grunt) {
                         vmsUrl: constants[target].vmsUrl,
                         travauxUrl: constants[target].travauxUrl,
                         aapiHeaderName: "X-Ovh-Session",
-                        vrackUrl: constants[target].vrackUrl,         // needed for US - add into constants.config.js for other zone if needed
+                        vrackUrl: constants[target].vrackUrl, // needed for US - add into constants.config.js for other zone if needed
                         MANAGER_URLS: constants[target].MANAGER_URLS,
                         REDIRECT_URLS: constants[target].REDIRECT_URLS
                     },
@@ -593,10 +593,6 @@ module.exports = function (grunt) {
                     deps: [
                         "ja.qr",
                         "ovh-utils-angular",
-                        "UserAccount.services",
-                        "UserAccount.controllers",
-                        "UserAccount.directives",
-                        "UserAccount.filters",
                         "ovhSignupApp"
                     ]
                 },
@@ -630,7 +626,7 @@ module.exports = function (grunt) {
                         travauxUrl: constants[target].travauxUrl,
                         swsProxyRootPath: "<%= swsProxyPath %>",
                         aapiHeaderName: "X-Ovh-2api-Session",
-                        vrackUrl: constants[target].vrackUrl,         // needed for US - add into constants.config.js for other zone if needed
+                        vrackUrl: constants[target].vrackUrl, // needed for US - add into constants.config.js for other zone if needed
                         MANAGER_URLS: constants[target].MANAGER_URLS,
                         REDIRECT_URLS: constants[target].REDIRECT_URLS
                     },
@@ -669,7 +665,6 @@ module.exports = function (grunt) {
                     dest: "<%= builddir %>/js/constants-user.js"
                 },
                 constants: {
-                    "UserAccount.conf.BASE_URL": "account/user/",
                     "UserAccount.constants": {
                         swsProxyRootPath: "<%= swsProxyPath %>",
                         target
@@ -790,7 +785,7 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.event.on("watch", (action, filepath, target) => {
+    grunt.event.on("watch", (action, filepath) => {
         if (/\.js$/.test(filepath)) {
             if (action === "added" || action === "changed") {
                 grunt.config("eslint.target", [filepath]);

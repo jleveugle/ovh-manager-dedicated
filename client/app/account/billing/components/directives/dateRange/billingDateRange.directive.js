@@ -1,4 +1,4 @@
-angular.module("Billing.directives").directive("billingDateRange", [
+angular.module("Billing").directive("billingDateRange", [
     "BILLING_BASE_URL",
     function (BILLING_BASE_URL) {
         "use strict";
