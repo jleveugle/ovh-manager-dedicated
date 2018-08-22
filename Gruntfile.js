@@ -589,12 +589,7 @@ module.exports = function (grunt) {
             devUserAccount: {
                 options: {
                     name: "UserAccount",
-                    dest: "<%= builddir %>/js/constants-user.js",
-                    deps: [
-                        "ja.qr",
-                        "ovh-utils-angular",
-                        "ovhSignupApp"
-                    ]
+                    dest: "<%= builddir %>/js/constants-user.js"
                 },
                 constants: {
                     "UserAccount.constants": {
