@@ -51,6 +51,9 @@ module.exports = {
         ].concat(
             _.flatten(glob.sync("./node_modules/ovh-module-*/Assets.js").map((src) => require(src).src.js.map((src) => `dist/client/${src}`)))
         ),
+        jsConstants: [
+            "dist/client/app/js/constants-app.js"
+        ],
         css: [
             "client/app/css/main.css",
             "client/app/css/main-scss.css",

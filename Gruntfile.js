@@ -154,7 +154,7 @@ module.exports = function (grunt) {
         concat: {
             dev: {
                 files: {
-                    "<%= builddir %>/js/index.js": ["<%= publicdir %>/index.js", assets.src.js]
+                    "<%= builddir %>/js/index.js": ["<%= publicdir %>/index.js", assets.src.js, "<%= builddir %>/js/constants-*.js"]
                 }
             },
             dist: {
@@ -804,18 +804,17 @@ module.exports = function (grunt) {
         "ngconstant:distBilling",
         "ngconstant:distUserAccount",
         "babel",
-        "ngAnnotate:dist",
+        "concat:dev",
+        "copy:translationLibJS",
+        "webpack",
+        "copy:html",
         "copy:modules",
         "less",
         "sass",
         "postcss",
-        "concat",
-        "replace",
-        "uglify",
-        "cssmin",
         "xml2json",
         "template",
-        "copy:dist",
+        "copy:dev",
         "htmlmin"
     ]);
 

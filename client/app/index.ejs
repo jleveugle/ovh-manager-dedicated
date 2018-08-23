@@ -122,12 +122,12 @@
             <script type="text/javascript" src="<%= basepath %>js/app/bin/app.min.js"></script>
         <% } else { %>
             <!-- common -->
-            <script type="text/javascript" src="vendors~main.bundle.js"></script>
+            <!--<script type="text/javascript" src="vendors~main.bundle.js"></script>-->
             <script type="text/javascript" src="bundle.js"></script>
             <!-- constants -->
-            <% for (var i = 0, len = constants.length ; i < len ; i++) { %>
+            <!--<% for (var i = 0, len = constants.length ; i < len ; i++) { %>
                 <script type="text/javascript" src="<%= basepath %><%= constants[i] %>"></script>
-            <% } %>
+            <% } %>-->
         <% } %>
     </body>
 </html>

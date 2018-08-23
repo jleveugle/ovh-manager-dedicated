@@ -1,11 +1,10 @@
 const webpack = require("webpack");
 const path = require("path");
-const NgAnnotatePlugin = require("ng-annotate-webpack-plugin");
 const RemcalcPlugin = require("less-plugin-remcalc");
 
 module.exports = {
     entry: path.join(__dirname, "tmp/js/index.js"),
-    mode: "development",
+    mode: "production",
     output: {
         path: path.join(__dirname, "dist/client/app"),
         filename: "bundle.js"
@@ -15,16 +14,13 @@ module.exports = {
             _: "lodash",
             Chart: "chart.js/dist/Chart.min.js",
             moment: "moment"
-        }),
-        new NgAnnotatePlugin({
-            add: true
         })
     ],
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /(node_modules|bower_components|assets)/,
+                exclude: /node_modules/,
                 use: [
                     // {
                     //     loader: 'angular-template-url-loader',
@@ -34,7 +30,10 @@ module.exports = {
                         loader: "babel-loader",
                         options: {
                             presets: ["@babel/preset-env"],
-                            plugins: [require("@babel/plugin-syntax-dynamic-import").default]
+                            plugins: [
+                                require("@babel/plugin-syntax-dynamic-import").default,
+                                "angularjs-annotate"
+                            ]
                         }
                     }
                 ]
@@ -88,6 +87,7 @@ module.exports = {
         ]
     },
     resolve: {
+        root: path.join(__dirname, "node_modules"),
         alias: {
             angular: path.join(__dirname, "./node_modules/angular"),
             lodash: path.join(__dirname, "./node_modules/lodash"),
@@ -95,10 +95,5 @@ module.exports = {
             Assets: path.resolve(__dirname, "client/assets/")
         },
         modules: ["node_modules", "client/app"]
-    },
-    optimization: {
-        splitChunks: {
-            chunks: "all"
-        }
     }
 }
